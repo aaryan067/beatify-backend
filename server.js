@@ -114,12 +114,34 @@ app.get('/encrypted/:songId', async (req, res) => {
 });
 
 function parseArtist(item) {
-    const plain = item.primary_artists || item.singers || '';
-    if (plain && !plain.startsWith('{')) return plain;
+    // Try direct string fields first
+    const direct = item.primary_artists || item.singers || item.music || '';
+    if (direct && !direct.startsWith('{') && direct.trim() !== '') {
+        return direct;
+    }
+
+    // Try more_info as object
     try {
-        const info = JSON.parse(item.more_info || '{}');
-        return info.primary_artists || info.singers || 'Unknown Artist';
-    } catch { return 'Unknown Artist'; }
+        const moreInfo = item.more_info;
+        if (typeof moreInfo === 'object' && moreInfo !== null) {
+            const a = moreInfo.primary_artists || moreInfo.singers || moreInfo.music || '';
+            if (a && a.trim() !== '') return a;
+        }
+        // Try more_info as JSON string
+        if (typeof moreInfo === 'string' && moreInfo.startsWith('{')) {
+            const info = JSON.parse(moreInfo);
+            const a = info.primary_artists || info.singers || info.music || '';
+            if (a && a.trim() !== '') return a;
+        }
+    } catch (e) {}
+
+    // Try subtitle (JioSaavn sometimes puts "Artist - Album" here)
+    const subtitle = item.subtitle || item.description || '';
+    if (subtitle && subtitle.trim() !== '') {
+        return subtitle.split(' - ')[0].trim();
+    }
+
+    return 'Unknown Artist';
 }
 
 function decodeHtml(text) {
