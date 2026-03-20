@@ -23,7 +23,7 @@ app.get('/search', async (req, res) => {
     console.log('Searching:', q);
 
     try {
-        const url = `https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&_marker=0&api_version=4&ctx=android&query=${encodeURIComponent(q)}&n=50&p=1`;
+        const url = `https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&_marker=0&api_version=4&ctx=android&q=${encodeURIComponent(q)}&n=50&p=1`;
         const r = await axios.get(url, { headers: HEADERS, timeout: 10000 });
         const results = r.data?.results || [];
         if (results.length > 0) {
@@ -40,7 +40,7 @@ app.get('/search', async (req, res) => {
     } catch (e) { console.error('JioSaavn search error:', e.message); }
 
     try {
-        const url = `https://www.jiosaavn.com/api.php?__call=autocomplete.get&_format=json&_marker=0&cc=in&includeMetaTags=1&query=${encodeURIComponent(q)}`;
+        const url = `https://www.jiosaavn.com/api.php?__call=autocomplete.get&_format=json&_marker=0&cc=in&includeMetaTags=1&q=${encodeURIComponent(q)}`;
         const r = await axios.get(url, { headers: HEADERS, timeout: 10000 });
         const data = r.data?.songs?.data || [];
         if (data.length > 0) {
