@@ -7,9 +7,19 @@ const cache = new NodeCache({ stdTTL: 3600 });
 const PORT = process.env.PORT || 3000;
 
 const HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36',
-    'Accept': 'application/json',
-    'Referer': 'https://www.jiosaavn.com/'
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'application/json, text/plain, */*',
+    'Accept-Language': 'en-US,en;q=0.9',
+    'Accept-Encoding': 'gzip, deflate, br',
+    'Referer': 'https://www.jiosaavn.com/',
+    'Origin': 'https://www.jiosaavn.com',
+    'Connection': 'keep-alive',
+    'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'Sec-Fetch-Dest': 'empty',
+    'Sec-Fetch-Mode': 'cors',
+    'Sec-Fetch-Site': 'same-origin'
 };
 
 app.get('/search', async (req, res) => {
@@ -127,3 +137,8 @@ function decodeHtml(text) {
 app.get('/', (req, res) => res.json({ status: 'Beatify API running', version: '4.0' }));
 
 app.listen(PORT, () => console.log(`Beatify server on port ${PORT}`));
+```
+
+Commit → wait for Render to deploy → test:
+```
+https://beatify-backend-7e5b.onrender.com/search?q=dopamine+guru+randhawa
