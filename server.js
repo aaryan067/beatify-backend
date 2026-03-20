@@ -4,7 +4,7 @@ const NodeCache = require('node-cache');
 
 const app = express();
 const cache = new NodeCache({ stdTTL: 3600 });
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 
 const HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -27,7 +27,10 @@ app.get('/search', async (req, res) => {
     try {
         const url = 'https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&_marker=0&api_version=4&ctx=android&q=' + encodeURIComponent(q) + '&n=50&p=1';
         const r = await axios.get(url, { headers: HEADERS, timeout: 10000 });
+        console.log('Status:', r.status);
+        console.log('Data:', JSON.stringify(r.data).substring(0, 300));
         const results = r.data && r.data.results ? r.data.results : [];
+        console.log('Results count:', results.length);
         if (results.length > 0) {
             const songs = results.map(function(item) {
                 return {
@@ -48,7 +51,10 @@ app.get('/search', async (req, res) => {
     try {
         const url = 'https://www.jiosaavn.com/api.php?__call=autocomplete.get&_format=json&_marker=0&cc=in&includeMetaTags=1&q=' + encodeURIComponent(q);
         const r = await axios.get(url, { headers: HEADERS, timeout: 10000 });
+        console.log('Autocomplete status:', r.status);
+        console.log('Autocomplete data:', JSON.stringify(r.data).substring(0, 300));
         const data = r.data && r.data.songs && r.data.songs.data ? r.data.songs.data : [];
+        console.log('Autocomplete results count:', data.length);
         if (data.length > 0) {
             const songs = data.map(function(item) {
                 return {
@@ -63,7 +69,7 @@ app.get('/search', async (req, res) => {
             return res.json(songs);
         }
     } catch (e) {
-        console.error('JioSaavn autocomplete error:', e.message);
+        console.error('Autocomplete error:', e.message);
     }
 
     res.status(500).json({ error: 'Search failed' });
